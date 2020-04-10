@@ -6,6 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	errors "bidderservice/pkg/errors"
+
 	bidderHandler "bidderservice/pkg/bidder/delivery/http"
 	_bidderUsecase "bidderservice/pkg/bidder/usecase"
 
@@ -20,17 +22,17 @@ func initUseCases() {
 
 	id, err := uuid.NewUUID()
 	if err != nil {
-		panic(err)
+		panic(errors.BidderIDGenerationError)
 	}
 	fileID := id.String()
 
 	bidDelay := os.Getenv("BID_DELAY")
 	bidDelayInt, err := strconv.Atoi(bidDelay)
 	if err != nil {
-		panic(err)
+		panic(errors.DelayBidError)
 	}
 
-	bidderUseCase = _bidderUsecase.New(fileID, "3000", bidDelayInt)
+	bidderUseCase = _bidderUsecase.New(fileID, os.Getenv("PORT"), bidDelayInt)
 	bidderUseCase.Register()
 }
 

@@ -7,6 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	errors "auctionservice/pkg/errors"
+
 	auctionHandler "auctionservice/pkg/auction/delivery/http"
 	_auctionRepo "auctionservice/pkg/auction/repository"
 	_auctionUsecase "auctionservice/pkg/auction/usecase"
@@ -32,7 +34,7 @@ func initUseCases() {
 	bidDelay := os.Getenv("BID_DELAY")
 	bidDelayInt, err := strconv.Atoi(bidDelay)
 	if err != nil {
-		panic(err)
+		panic(errors.DelayBidError)
 	}
 	auctionUseCase = _auctionUsecase.New(auctionRepo, bidDelayInt)
 }
