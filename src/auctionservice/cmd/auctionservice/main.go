@@ -5,57 +5,36 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	database "auctionservice/infrastructure/database"
-	models "auctionservice/pkg/models"
-
-	templateHandler "auctionservice/pkg/template/delivery/http"
-	_templateRepo "auctionservice/pkg/template/repository"
-	_templateUsecase "auctionservice/pkg/template/usecase"
+	auctionHandler "auctionservice/pkg/auction/delivery/http"
+	_auctionRepo "auctionservice/pkg/auction/repository"
+	_auctionUsecase "auctionservice/pkg/auction/usecase"
 )
 
 var (
-	templateRepo *_templateRepo.Repository
+	auctionRepo *_auctionRepo.MemoryRepository
 )
 
 var (
-	templateUseCase *_templateUsecase.Usecase
+	auctionUseCase *_auctionUsecase.Usecase
 )
 
 var (
 	masterDB *sql.DB
 )
 
-func initInfrastructure() {
-
-	var err error
-
-	masterDB, err = database.GetMysqlConnection(&models.MysqlConfig{
-		Host:     "127.0.0.1",
-		User:     "root",
-		Password: "root",
-		Database: "test_master",
-		Port:     "8889",
-	})
-
-	if err != nil {
-		panic(err)
-	}
-}
-
 func initRepositories() {
-	templateRepo = _templateRepo.NewMysqlRepo(masterDB)
+	auctionRepo = _auctionRepo.NewMemoryRepository()
 }
 
 func initUseCases() {
-	templateUseCase = _templateUsecase.New(templateRepo)
+	auctionUseCase = _auctionUsecase.New(auctionRepo)
 }
 
 func initHandlers(router gin.IRouter) {
-	templateHandler.InitHandler(router, templateUseCase)
+	auctionHandler.InitHandler(router, auctionUseCase)
 }
 
 func main() {
-	initInfrastructure()
 	initRepositories()
 	initUseCases()
 
