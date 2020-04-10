@@ -20,6 +20,13 @@ func InitHandler(router gin.IRouter, uc auction.Usecase) {
 }
 
 func (h *Handler) create(c *gin.Context) {
-	h.usecase.StartAuction("123")
-	helpers.Respond(c, 200, "Report Created", nil)
+	auctionResponse := h.usecase.StartAuction("123")
+	if auctionResponse.BidderID == "" {
+		helpers.Respond(c, 404, "No bidder online", nil)
+	} else {
+		helpers.Respond(c, 200, "Auction Completed", map[string]interface{}{
+			"bidder_id":     auctionResponse.BidderID,
+			"max_bid_value": auctionResponse.MaxBidValue,
+		})
+	}
 }

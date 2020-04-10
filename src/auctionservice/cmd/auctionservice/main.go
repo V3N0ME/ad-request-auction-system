@@ -27,7 +27,7 @@ func initRepositories() {
 }
 
 func initUseCases() {
-	auctionUseCase = _auctionUsecase.New(auctionRepo)
+	auctionUseCase = _auctionUsecase.New(auctionRepo, 250)
 }
 
 func initHandlers(router gin.IRouter) {

@@ -4,5 +4,5 @@ import models "auctionservice/pkg/models"
 
 //Usecase is the interface of auction's interface
 type Usecase interface {
-	StartAuction(string) (models.AuctionResponse, error)
+	StartAuction(string) models.AuctionResponse
 }

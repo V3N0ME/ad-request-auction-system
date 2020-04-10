@@ -13,3 +13,8 @@ func NewMemoryRepository() *MemoryRepository {
 		bidders: make(map[string]models.Bidder),
 	}
 }
+
+//GetAllBidders returns all the registered bidders
+func (m *MemoryRepository) GetAllBidders() map[string]models.Bidder {
+	return m.bidders
+}
