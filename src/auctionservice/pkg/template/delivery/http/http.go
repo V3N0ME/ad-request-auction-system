@@ -3,7 +3,7 @@ package http
 import (
 	"github.com/gin-gonic/gin"
 
-	template "janusapi/pkg/template"
+	template "auctionservice/pkg/template"
 )
 
 //Handler is the instance od the templare's handler

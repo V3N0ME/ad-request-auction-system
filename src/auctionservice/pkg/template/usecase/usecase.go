@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	template "janusapi/pkg/template"
+	template "auctionservice/pkg/template"
 )
 
 //Usecase is the instance of template

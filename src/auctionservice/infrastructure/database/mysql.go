@@ -1,9 +1,9 @@
 package database
 
 import (
+	models "auctionservice/pkg/models"
 	"database/sql"
 	"fmt"
-	models "janusapi/pkg/models"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"

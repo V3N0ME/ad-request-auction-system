@@ -1,0 +1,25 @@
+version: "3"
+services:
+  auctionservice:
+    container_name: auctionservice
+    build:
+      context: ../src/auctionservice
+      dockerfile: Dockerfile
+    image: auctionservice
+    ports:
+      - "8080:8080"
+    depends_on:
+      - masterdb
+      - authservice
+      - metricservice
+
+  masterdb:
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: auctionservice-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data

@@ -5,12 +5,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	database "janusapi/infrastructure/database"
-	models "janusapi/pkg/models"
+	database "auctionservice/infrastructure/database"
+	models "auctionservice/pkg/models"
 
-	templateHandler "janusapi/pkg/template/delivery/http"
-	_templateRepo "janusapi/pkg/template/repository"
-	_templateUsecase "janusapi/pkg/template/usecase"
+	templateHandler "auctionservice/pkg/template/delivery/http"
+	_templateRepo "auctionservice/pkg/template/repository"
+	_templateUsecase "auctionservice/pkg/template/usecase"
 )
 
 var (

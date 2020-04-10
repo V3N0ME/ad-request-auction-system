@@ -1,4 +1,4 @@
-module janusapi
+module auctionservice
 
 go 1.12
 
