@@ -62,7 +62,7 @@ func (u *Usecase) getAuctionResult(bidders map[string]models.Bidder) models.Auct
 		err        error
 	}
 
-	httpRes := make(chan httpResponse)
+	httpRes := make(chan httpResponse, len(bidders))
 
 	for _, b := range bidders {
 		go func(bidder models.Bidder) {
@@ -75,9 +75,10 @@ func (u *Usecase) getAuctionResult(bidders map[string]models.Bidder) models.Auct
 			}
 
 			body, statusCode, err := u.req.MakeRequest(request.Request{
-				URL:    "http://127.0.0.1:3000/bid",
+				URL:    "http://127.0.0.1:3000/bid/",
 				Method: "GET",
 			})
+
 			httpRes <- httpResponse{
 				body:       body,
 				statusCode: statusCode,
@@ -90,7 +91,12 @@ func (u *Usecase) getAuctionResult(bidders map[string]models.Bidder) models.Auct
 	var maxBidValue float64
 	var maxBidderID string
 
+	type apiResponse struct {
+		Data models.BidderResponse `json:"data"`
+	}
+
 	for range bidders {
+
 		response := <-httpRes
 
 		if response.err != nil {
@@ -100,14 +106,18 @@ func (u *Usecase) getAuctionResult(bidders map[string]models.Bidder) models.Auct
 			continue
 		}
 
-		var bidderResponse models.BidderResponse
-		json.Unmarshal([]byte(response.body), &bidderResponse)
+		var apiResp apiResponse
+		json.Unmarshal([]byte(response.body), &apiResp)
+
+		bidderResponse := apiResp.Data
 
 		if bidderResponse.BidValue > maxBidValue {
 			maxBidderID = bidderResponse.BidderID
 			maxBidValue = bidderResponse.BidValue
 		}
 	}
+
+	close(httpRes)
 
 	return models.AuctionResponse{
 		BidderID:    maxBidderID,

@@ -3,6 +3,7 @@ package usecase
 import (
 	models "bidderservice/pkg/models"
 	request "bidderservice/pkg/request"
+	"encoding/json"
 	"log"
 	"math"
 	"math/rand"
@@ -13,15 +14,16 @@ import (
 type Usecase struct {
 	req      *request.CustomHTTP
 	bidderID string
+	port     string
 }
 
-const retryDelay = 10000
+const retryDelay = 5
 
 const minBid = 10
 const maxBid = 10000
 
 //New returns a new instance of auction's usecase
-func New(bidderID string, bidderTimeout int) *Usecase {
+func New(bidderID, port string, bidderTimeout int) *Usecase {
 
 	req := request.New(request.Config{
 		Timeout:            time.Duration(bidderTimeout) * time.Microsecond,
@@ -31,6 +33,7 @@ func New(bidderID string, bidderTimeout int) *Usecase {
 	return &Usecase{
 		req:      req,
 		bidderID: bidderID,
+		port:     port,
 	}
 }
 
@@ -48,16 +51,26 @@ func (u *Usecase) MakeBid() models.BidderResponse {
 //Register registers the bidder with the auctioner
 func (u *Usecase) Register() {
 
-	log.Println("Registering Bidder")
+	log.Println("Registering Bidder...")
 
-	_, statusCode, err := u.req.MakeRequest(request.Request{})
+	values := map[string]string{"bidder_id": u.bidderID, "port": u.port}
+	jsonValue, _ := json.Marshal(values)
+
+	_, statusCode, err := u.req.MakeRequest(request.Request{
+		URL:     "http://127.0.0.1:8080/auction/bidder",
+		Method:  "POST",
+		Payload: jsonValue,
+	})
+
 	if err != nil {
-		time.Sleep(time.Duration(retryDelay))
+		time.Sleep(time.Duration(retryDelay) * time.Second)
 		u.Register()
 	}
 
 	if statusCode != 200 {
-		time.Sleep(time.Duration(retryDelay))
+		time.Sleep(time.Duration(retryDelay) * time.Second)
 		u.Register()
 	}
+
+	log.Println("Bidder Registered")
 }

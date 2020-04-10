@@ -9,5 +9,5 @@ type Bidder struct {
 //BidderResponse is the http response from the bidder
 type BidderResponse struct {
 	BidderID string  `json:"bidder_id"`
-	BidValue float64 `json:"bidder_value"`
+	BidValue float64 `json:"bid_value"`
 }

@@ -21,7 +21,7 @@ func initUseCases() {
 	}
 	fileID := id.String()
 
-	bidderUseCase = _bidderUsecase.New(fileID, 250)
+	bidderUseCase = _bidderUsecase.New(fileID, "3000", 250)
 	bidderUseCase.Register()
 }
 
