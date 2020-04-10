@@ -59,9 +59,7 @@ func (u *Usecase) Register() {
 	values := map[string]string{"bidder_id": u.bidderID, "port": u.port}
 	jsonValue, _ := json.Marshal(values)
 
-	//"http://auctionservice/auction/bidder"
 	auctionServiceURL := os.Getenv("AUCTION_SERVICE_URL")
-	auctionServiceURL = "http://127.0.0.1:8080/auction/bidder"
 
 	_, statusCode, err := u.req.MakeRequest(request.Request{
 		URL:     auctionServiceURL,

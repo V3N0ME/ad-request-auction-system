@@ -9,8 +9,12 @@ WORKDIR /home
 
 COPY --from=build-img /auctionservice .
 
-# Start apps
 ENV ENV=production
 ENV TZ=Asia/Kolkata
+ENV PORT=8080
+
+#ENV GIN_MODE=release
+
+EXPOSE 8080
 
 CMD ./auctionservice

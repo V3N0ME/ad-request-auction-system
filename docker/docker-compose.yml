@@ -1,7 +1,6 @@
 version: "3"
 services:
     auctionservice:
-      network_mode: host
         container_name: auctionservice
         build:
             context: ../src/auctionservice
@@ -10,19 +9,22 @@ services:
         environment:
             BID_DELAY: 200
         ports:
-            - "8080:8080"
+            - 8080:8080
 
     bidderservice:
-      network_mode: host
-        container_name: bidderservice
         build:
             context: ../src/bidderservice
             dockerfile: Dockerfile
-        image: auctionservice
+        image: bidderservice
         environment:
-            AUCTION_SERVICE_URL: http://auctionservice
+            AUCTION_SERVICE_URL: http://auctionservice:8080/auction/bidder
             BID_DELAY: 200
-        ports:
-            - "3000:3080"
+            PORT: 3000
         depends_on:
             - auctionservice
+        ports:
+            - 3000:3000
+
+networks:
+    host:
+        external: true

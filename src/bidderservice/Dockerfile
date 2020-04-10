@@ -9,8 +9,9 @@ WORKDIR /home
 
 COPY --from=build-img /bidderservice .
 
-# Start apps
 ENV ENV=production
 ENV TZ=Asia/Kolkata
+ENV PORT=3000
 
+EXPOSE 3000
 CMD ./bidderservice
