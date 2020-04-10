@@ -3,6 +3,7 @@ package models
 //Bidder is the model of a bidder
 type Bidder struct {
 	BidderID string `json:"bidder_id" binding:"required"`
+	IP       string `json:"ip" binding:"required"`
 	Port     string `json:"port" binding:"required"`
 }
 

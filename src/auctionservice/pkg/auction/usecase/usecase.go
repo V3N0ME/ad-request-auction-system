@@ -5,6 +5,7 @@ import (
 	models "auctionservice/pkg/models"
 	request "auctionservice/pkg/request"
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -77,7 +78,7 @@ func (u *Usecase) getAuctionResult(bidders map[string]models.Bidder) models.Auct
 			}
 
 			body, statusCode, err := u.req.MakeRequest(request.Request{
-				URL:    "http://127.0.0.1:3000/bid/",
+				URL:    fmt.Sprintf("http://%s:%s/bid/", bidder.IP, bidder.Port),
 				Method: "GET",
 			})
 

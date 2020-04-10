@@ -1,6 +1,11 @@
 package http
 
 import (
+	"fmt"
+	"log"
+	"net"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 
@@ -51,6 +56,13 @@ func (h *Handler) registerBidder(c *gin.Context) {
 
 	var bidder models.Bidder
 
+	clientIP, err := getClientIPByRequest(c.Request)
+	if err != nil {
+		helpers.Respond(c, 400, err.Error(), nil)
+	}
+
+	bidder.IP = clientIP
+
 	if err := c.ShouldBindWith(&bidder, binding.JSON); err != nil {
 		helpers.Respond(c, 400, err.Error(), nil)
 		return
@@ -84,4 +96,27 @@ func (h *Handler) listEndpoints(c *gin.Context) {
 		},
 	},
 	)
+}
+
+func getClientIPByRequest(req *http.Request) (ip string, err error) {
+
+	// Try via request
+	ip, port, err := net.SplitHostPort(req.RemoteAddr)
+	if err != nil {
+		log.Printf("debug: Getting req.RemoteAddr %v", err)
+		return "", err
+	} else {
+		log.Printf("debug: With req.RemoteAddr found IP:%v; Port: %v", ip, port)
+	}
+
+	userIP := net.ParseIP(ip)
+	if userIP == nil {
+		message := fmt.Sprintf("debug: Parsing IP from Request.RemoteAddr got nothing.")
+		log.Printf(message)
+		return "", fmt.Errorf(message)
+
+	}
+	log.Printf("debug: Found IP: %v", userIP)
+	return userIP.String(), nil
+
 }
