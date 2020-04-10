@@ -15,6 +15,7 @@ type Handler struct {
 //InitHandler initialises template's http handler
 func InitHandler(router gin.IRouter, uc auction.Usecase) {
 	handler := &Handler{uc}
+	router.GET("/list", handler.listEndpoints)
 	route := router.Group("/auction")
 	route.POST("/", handler.create)
 }
@@ -29,4 +30,30 @@ func (h *Handler) create(c *gin.Context) {
 			"max_bid_value": auctionResponse.MaxBidValue,
 		})
 	}
+}
+
+func (h *Handler) listEndpoints(c *gin.Context) {
+
+	type Endpoint struct {
+		Path    string   `json:"path"`
+		Methods []string `json:"methods"`
+	}
+
+	helpers.Respond(c, 200, "Success", map[string]interface{}{
+		"endpoints": []Endpoint{
+			Endpoint{
+				Path:    "/auction",
+				Methods: []string{"POST"},
+			},
+			Endpoint{
+				Path:    "/bidder",
+				Methods: []string{"POST"},
+			},
+			Endpoint{
+				Path:    "/list",
+				Methods: []string{"GET"},
+			},
+		},
+	},
+	)
 }
