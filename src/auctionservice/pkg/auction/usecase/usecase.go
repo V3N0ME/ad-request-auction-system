@@ -17,8 +17,10 @@ type Usecase struct {
 //New returns a new instance of auction's usecase
 func New(repo auction.Repository, bidderTimeout int) *Usecase {
 
+	//bid delay is set to the http timeout so the bid will be considered invalid if the request timesout
+	//adds a 5ms threshold to timeout to counter http travel time
 	req := request.New(request.Config{
-		Timeout:            time.Duration(bidderTimeout) * time.Microsecond,
+		Timeout:            time.Duration(bidderTimeout+5) * time.Millisecond,
 		MaxOpenConnections: 500,
 	})
 
@@ -111,6 +113,7 @@ func (u *Usecase) getAuctionResult(bidders map[string]models.Bidder) models.Auct
 
 		bidderResponse := apiResp.Data
 
+		//The bid of the latest bidder is chosen if the bid values are equal
 		if bidderResponse.BidValue > maxBidValue {
 			maxBidderID = bidderResponse.BidderID
 			maxBidValue = bidderResponse.BidValue

@@ -1,6 +1,9 @@
 package main
 
 import (
+	"os"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 
 	bidderHandler "bidderservice/pkg/bidder/delivery/http"
@@ -21,7 +24,13 @@ func initUseCases() {
 	}
 	fileID := id.String()
 
-	bidderUseCase = _bidderUsecase.New(fileID, "3000", 250)
+	bidDelay := os.Getenv("BID_DELAY")
+	bidDelayInt, err := strconv.Atoi(bidDelay)
+	if err != nil {
+		panic(err)
+	}
+
+	bidderUseCase = _bidderUsecase.New(fileID, "3000", bidDelayInt)
 	bidderUseCase.Register()
 }
 

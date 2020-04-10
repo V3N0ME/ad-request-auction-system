@@ -1,25 +1,28 @@
 version: "3"
 services:
-  auctionservice:
-    container_name: auctionservice
-    build:
-      context: ../src/auctionservice
-      dockerfile: Dockerfile
-    image: auctionservice
-    ports:
-      - "8080:8080"
-    depends_on:
-      - masterdb
-      - authservice
-      - metricservice
+    auctionservice:
+      network_mode: host
+        container_name: auctionservice
+        build:
+            context: ../src/auctionservice
+            dockerfile: Dockerfile
+        image: auctionservice
+        environment:
+            BID_DELAY: 200
+        ports:
+            - "8080:8080"
 
-  masterdb:
-    image: postgres
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: auctionservice-db
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+    bidderservice:
+      network_mode: host
+        container_name: bidderservice
+        build:
+            context: ../src/bidderservice
+            dockerfile: Dockerfile
+        image: auctionservice
+        environment:
+            AUCTION_SERVICE_URL: http://auctionservice
+            BID_DELAY: 200
+        ports:
+            - "3000:3080"
+        depends_on:
+            - auctionservice

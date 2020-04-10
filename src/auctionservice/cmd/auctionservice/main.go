@@ -2,6 +2,8 @@ package main
 
 import (
 	"database/sql"
+	"os"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -27,7 +29,12 @@ func initRepositories() {
 }
 
 func initUseCases() {
-	auctionUseCase = _auctionUsecase.New(auctionRepo, 250)
+	bidDelay := os.Getenv("BID_DELAY")
+	bidDelayInt, err := strconv.Atoi(bidDelay)
+	if err != nil {
+		panic(err)
+	}
+	auctionUseCase = _auctionUsecase.New(auctionRepo, bidDelayInt)
 }
 
 func initHandlers(router gin.IRouter) {

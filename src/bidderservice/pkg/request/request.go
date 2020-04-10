@@ -5,7 +5,6 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
-	"net"
 	"net/http"
 	"time"
 )
@@ -49,8 +48,7 @@ func New(config Config) *CustomHTTP {
 		httpQueue: make(chan struct{}, config.MaxOpenConnections),
 		client: http.Client{
 			Transport: &http.Transport{
-				Dial:                  setTimeout(config.Timeout * time.Second),
-				ResponseHeaderTimeout: config.Timeout * time.Second,
+				ResponseHeaderTimeout: config.Timeout,
 			},
 		},
 	}
@@ -102,10 +100,4 @@ func (c *CustomHTTP) MakeRequest(request Request) (string, int, error) {
 	}
 
 	return strBody, resp.StatusCode, nil
-}
-
-func setTimeout(timeout time.Duration) func(string, string) (net.Conn, error) {
-	return func(network, addr string) (net.Conn, error) {
-		return net.DialTimeout(network, addr, timeout)
-	}
 }
