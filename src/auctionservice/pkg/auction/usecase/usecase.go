@@ -28,6 +28,23 @@ func New(repo auction.Repository, bidderTimeout int) *Usecase {
 	}
 }
 
+//RegisterBidder registers a new bidder
+func (u *Usecase) RegisterBidder(bidder models.Bidder) {
+	u.repo.RegisterBidder(bidder)
+}
+
+//GetAllBidders returns all registered bidders
+func (u *Usecase) GetAllBidders() []models.Bidder {
+	allBidders := make([]models.Bidder, 0)
+	bidders := u.repo.GetAllBidders()
+
+	for _, bidder := range bidders {
+		allBidders = append(allBidders, bidder)
+	}
+
+	return allBidders
+}
+
 //StartAuction starts the bidding round and returns the auction response
 func (u *Usecase) StartAuction(auctionID string) models.AuctionResponse {
 
@@ -50,7 +67,17 @@ func (u *Usecase) getAuctionResult(bidders map[string]models.Bidder) models.Auct
 	for _, b := range bidders {
 		go func(bidder models.Bidder) {
 
-			body, statusCode, err := u.req.MakeRequest(request.Request{})
+			type Request struct {
+				URL     string
+				Method  string
+				Payload []byte
+				Headers map[string]string
+			}
+
+			body, statusCode, err := u.req.MakeRequest(request.Request{
+				URL:    "http://127.0.0.1:3000/bid",
+				Method: "GET",
+			})
 			httpRes <- httpResponse{
 				body:       body,
 				statusCode: statusCode,
@@ -65,6 +92,7 @@ func (u *Usecase) getAuctionResult(bidders map[string]models.Bidder) models.Auct
 
 	for range bidders {
 		response := <-httpRes
+
 		if response.err != nil {
 			continue
 		}

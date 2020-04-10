@@ -18,3 +18,8 @@ func NewMemoryRepository() *MemoryRepository {
 func (m *MemoryRepository) GetAllBidders() map[string]models.Bidder {
 	return m.bidders
 }
+
+//RegisterBidder registers a new bidder
+func (m *MemoryRepository) RegisterBidder(bidder models.Bidder) {
+	m.bidders[bidder.BidderID] = bidder
+}

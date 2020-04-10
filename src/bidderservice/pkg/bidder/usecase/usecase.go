@@ -3,6 +3,7 @@ package usecase
 import (
 	models "bidderservice/pkg/models"
 	request "bidderservice/pkg/request"
+	"log"
 	"math"
 	"math/rand"
 	"time"
@@ -14,13 +15,13 @@ type Usecase struct {
 	bidderID string
 }
 
-const retryDelay = 10
+const retryDelay = 10000
 
 const minBid = 10
 const maxBid = 10000
 
 //New returns a new instance of auction's usecase
-func New(bidderTimeout int) *Usecase {
+func New(bidderID string, bidderTimeout int) *Usecase {
 
 	req := request.New(request.Config{
 		Timeout:            time.Duration(bidderTimeout) * time.Microsecond,
@@ -29,7 +30,7 @@ func New(bidderTimeout int) *Usecase {
 
 	return &Usecase{
 		req:      req,
-		bidderID: "123",
+		bidderID: bidderID,
 	}
 }
 
@@ -46,6 +47,9 @@ func (u *Usecase) MakeBid() models.BidderResponse {
 
 //Register registers the bidder with the auctioner
 func (u *Usecase) Register() {
+
+	log.Println("Registering Bidder")
+
 	_, statusCode, err := u.req.MakeRequest(request.Request{})
 	if err != nil {
 		time.Sleep(time.Duration(retryDelay))

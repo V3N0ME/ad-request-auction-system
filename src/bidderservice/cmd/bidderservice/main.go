@@ -5,6 +5,8 @@ import (
 
 	bidderHandler "bidderservice/pkg/bidder/delivery/http"
 	_bidderUsecase "bidderservice/pkg/bidder/usecase"
+
+	"github.com/google/uuid"
 )
 
 var (
@@ -12,7 +14,15 @@ var (
 )
 
 func initUseCases() {
-	bidderUseCase = _bidderUsecase.New(250)
+
+	id, err := uuid.NewUUID()
+	if err != nil {
+		panic(err)
+	}
+	fileID := id.String()
+
+	bidderUseCase = _bidderUsecase.New(fileID, 250)
+	bidderUseCase.Register()
 }
 
 func initHandlers(router gin.IRouter) {
