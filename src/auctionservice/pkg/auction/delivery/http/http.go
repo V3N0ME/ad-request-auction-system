@@ -94,8 +94,8 @@ func (h *Handler) listEndpoints(c *gin.Context) {
 				Methods: []string{"POST"},
 			},
 			Endpoint{
-				Path:    "/bidder",
-				Methods: []string{"POST"},
+				Path:    "/auction/bidder",
+				Methods: []string{"POST", "GET"},
 			},
 			Endpoint{
 				Path:    "/list",
