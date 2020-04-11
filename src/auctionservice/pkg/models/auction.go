@@ -2,7 +2,7 @@ package models
 
 //Auction is the model of an auction
 type Auction struct {
-	AuctionID string `json:"auction_id"`
+	AuctionID string `json:"auction_id" binding:"required"`
 }
 
 //AuctionResponse is the model of the reponse from the auction
