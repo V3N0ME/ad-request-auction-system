@@ -13,4 +13,6 @@ ENV ENV=production
 ENV TZ=Asia/Kolkata
 ENV PORT=3000
 
+ENV GIN_MODE=release
+
 CMD ./bidderservice

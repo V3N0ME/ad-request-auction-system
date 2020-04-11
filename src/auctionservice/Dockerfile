@@ -13,7 +13,7 @@ ENV ENV=production
 ENV TZ=Asia/Kolkata
 ENV PORT=8080
 
-#ENV GIN_MODE=release
+ENV GIN_MODE=release
 
 EXPOSE 8080
 

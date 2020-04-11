@@ -57,16 +57,10 @@ func New(config Config) *CustomHTTP {
 //MakeRequest makes http requests
 func (c *CustomHTTP) MakeRequest(request Request) (string, int, error) {
 
-	didRetry := false
-
 	//waits until queue has space left
 	c.httpQueue <- struct{}{}
 	defer func() {
-		//to avoid queue from being occupied until request is succeeded after retry
-		//instead queue is poped if an error occurs before retrying
-		if !didRetry {
-			<-c.httpQueue
-		}
+		<-c.httpQueue
 	}()
 
 	req, err := http.NewRequest(request.Method, request.URL, bytes.NewBuffer(request.Payload))

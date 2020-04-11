@@ -7,6 +7,7 @@ An auction system which can auction bids and select the winning bid such that it
 ## Running the project
 
 ```bash
+$ cd docker
 $ docker-compose up --scale bidderservice=3
 ```
 

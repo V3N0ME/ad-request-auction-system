@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"os"
 	"strconv"
 
@@ -20,10 +19,6 @@ var (
 
 var (
 	auctionUseCase *_auctionUsecase.Usecase
-)
-
-var (
-	masterDB *sql.DB
 )
 
 func initRepositories() {
