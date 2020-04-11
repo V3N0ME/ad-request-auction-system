@@ -19,9 +19,9 @@ type Usecase struct {
 func New(repo auction.Repository, bidderTimeout int) *Usecase {
 
 	//bid delay is set to the http timeout so the bid will be considered invalid if the request timesout
-	//adds a 5ms threshold to timeout to counter http travel time
+	//adds a 10ms threshold to timeout to counter http travel time
 	req := request.New(request.Config{
-		Timeout:            time.Duration(bidderTimeout+5) * time.Millisecond,
+		Timeout:            time.Duration(bidderTimeout+10) * time.Millisecond,
 		MaxOpenConnections: 500,
 	})
 
